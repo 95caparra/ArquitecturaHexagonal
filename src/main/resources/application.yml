@@ -1,0 +1,172 @@
+## SERVER
+server:
+  port: 8081
+  compression:
+    enabled: true
+  error:
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
+
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,info,metrics,threaddump,health
+
+## LOGGER
+logging:
+  level:
+    root: info
+    org.springframework: info
+    com.movii.hexagonal: info
+
+## APPLICATION
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/local
+  application:
+    name: rest-hexagonal-architecture
+    version: v1.0.0
+    log: ./logs/
+    restPort: ${server.port}
+    root: /moviired-api/${spring.application.name}/${spring.application.version}
+    services:
+      rest:
+        #[POST]
+        createPerson:
+          name: person
+          path: /create/
+        #[POST]
+        createCustomer:
+          name: customer
+          path: /create-customer/
+        #[GET]
+        getPerson:
+          name: person
+          path: /get/{id}
+        #[DELETE]
+        updatePerson:
+          name: person
+          path: /update/{id}
+        #[DELETE]
+        deletePerson:
+          name: person
+          path: /delete/{id}
+        #updateTransaction:
+          #name: updateTransaction
+          #path: /updateTransaction
+
+  main:
+    allow-bean-definition-overriding: true
+
+  mysql:
+    datasource:
+      url: jdbc:mysql://localhost:3306/ejercicio?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT-5
+      username: root
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      connection-test-query: SELECT 1
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      hikari:
+        minimum-idle: 1
+        maximum-pool-size: 5
+        pool-name: yourPoolName
+        auto-commit: false
+  mysql2:
+    datasource:
+      url: jdbc:mysql://localhost:3306/ejercicio2?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT-5
+      username: root
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      connection-test-query: SELECT 1
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      hikari:
+        minimum-idle: 1
+        maximum-pool-size: 5
+        pool-name: yourPoolName
+        auto-commit: false
+  postgres:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/ejercicio3
+      username: postgres
+      password: sa
+      driver-class-name: org.postgresql.Driver
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #datasource:
+  #  mysql:
+  #  initialization-mode: never
+  #  driver-class-name: com.mysql.cj.jdbc.Driver
+  #  url: jdbc:mysql://localhost:3306/ejercicio?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT-5
+  #  username: root
+  #  password:
+
+
+  jpa:
+    #database: mysql
+    #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+adapters:
+  restricted:
+    url: "http://localhost:8083/movii-api/movii-investor/1.0.0"
+    connectionTimeout: 24000
+    readTimeout: 24000
+    pathRegistro: "/investor"
+
+#PARAMETROS
+params:
+  document-type:
+    value: "1-CC,2-CE,3-TI,4-PEP"
+    allowableValues: "1,2,3,4"
+
+
+## ERRORS
+status-codes:
+  success:
+    "00":
+      message: TRANSACCION EXITOSA
+      codes:
+        - "0"
+        - "00"
+        - "000"
+        - 200
+  fails:
+    "02":
+      message: TRANSACCION RECHAZADA
+      codes:
+        - 1, Operación inválida
+    "99":
+      message: NO SE HA OBTENIDO RESPUESTA DESDE EL OPERADOR
+      codes:
+        - 99
+    "100": # Respuestas Informativas
+      message: NO SE HA OBTENIDO RESPUESTA DESDE EL OPERADOR
+      codes:
+        - 101, "La longitud del campo no es correcta"
+        - 102, "El campo no cumple con los criterios de validación"
+        - 103, "Mensaje diciente que informa el error controlado"
+        - 104, "Mensaje diciente que informa el error controlado"
+    "400": #Errores de cliente
+      message: NO SE HA OBTENIDO RESPUESTA DESDE EL OPERADOR
+      codes:
+        - 401, "La longitud del campo no es correcta"
+        - 402, "El campo no cumple con los criterios de validación"
+        - 403, "Mensaje diciente que informa el error controlado"
+        - 404, "Mensaje diciente que informa el error controlado"
+        - 405, "El Json enviado no cumple con el formato"
+        - 406, "El Json enviado no cumple con el formato"
+        - 407, "El Json enviado no cumple con el formato"
+    "500":
+      message: ERROR INESPERADO
+      codes:
+        - 500
